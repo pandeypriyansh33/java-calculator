@@ -4,7 +4,7 @@ import java.awt.event.ActionEvent; // Handles the data when a button is clicked
 import java.awt.event.ActionListener; // Allows our program to listen to mouse clicks
 
 // We use 'implements ActionListener' so this code can watch for button clicks
-public class main implements ActionListener {
+public class Main implements ActionListener {
 
     // --- STEP 1: CREATE THE PIECES FOR OUR CALCULATOR WINDOW ---
     JFrame window;       // The main outside window frame
@@ -24,7 +24,7 @@ public class main implements ActionListener {
     Font customFont = new Font("Arial", Font.BOLD, 24);
 
     // --- STEP 2: THE CONSTRUCTOR (This builds the layout from scratch) ---
-    public main() {
+    public Main() {
         
         // Build the main outside window frame
         window = new JFrame("My First Java Calculator");
@@ -98,54 +98,66 @@ public class main implements ActionListener {
 
     // --- STEP 5: THE CLICK INTERCEPTOR (Runs automatically whenever ANY button is pressed) ---
     @Override
-    public void actionPerformed(ActionEvent e) {
-        Object clicked = e.getSource(); // Identifies exactly which button your mouse clicked
+public void actionPerformed(ActionEvent e) {
+    Object clicked = e.getSource();
 
-        // If a number button was clicked, glue that number text onto the screen view
-        if (clicked == btn1) { screen.setText(screen.getText().concat("1")); }
-        if (clicked == btn2) { screen.setText(screen.getText().concat("2")); }
-        if (clicked == btn3) { screen.setText(screen.getText().concat("3")); }
-        if (clicked == btn4) { screen.setText(screen.getText().concat("4")); }
-        if (clicked == btn5) { screen.setText(screen.getText().concat("5")); }
-        if (clicked == btn6) { screen.setText(screen.getText().concat("6")); }
-        if (clicked == btn7) { screen.setText(screen.getText().concat("7")); }
-        if (clicked == btn8) { screen.setText(screen.getText().concat("8")); }
-        if (clicked == btn9) { screen.setText(screen.getText().concat("9")); }
-        if (clicked == btn0) { screen.setText(screen.getText().concat("0")); }
+    // 1. NUMBER BUTTONS (Linked with else-if so they never interfere)
+    if (clicked == btn1) {
+        screen.setText(screen.getText().concat("1"));
+    } else if (clicked == btn2) {
+        screen.setText(screen.getText().concat("2"));
+    } else if (clicked == btn3) {
+        screen.setText(screen.getText().concat("3"));
+    } else if (clicked == btn4) {
+        screen.setText(screen.getText().concat("4"));
+    } else if (clicked == btn5) {
+        screen.setText(screen.getText().concat("5"));
+    } else if (clicked == btn6) {
+        screen.setText(screen.getText().concat("6"));
+    } else if (clicked == btn7) {
+        screen.setText(screen.getText().concat("7"));
+    } else if (clicked == btn8) {
+        screen.setText(screen.getText().concat("8"));
+    } else if (clicked == btn9) {
+        screen.setText(screen.getText().concat("9"));
+    } else if (clicked == btn0) {
+        screen.setText(screen.getText().concat("0"));
+    }
+    
+    // 2. CLEAR BUTTON If Clear (C) is clicked, wipe the screen blank
+    else if (clicked == btnClear) {
+        screen.setText("");
+        firstNumber = 0;
+        secondNumber = 0;
+        finalAnswer = 0;
+    }
 
-        // If Clear (C) is clicked, wipe the screen blank
-        if (clicked == btnClear) {
-            screen.setText("");
-        }
-
-        // --- STEP 6: OPERATOR SELECTION (+, -, *, /) ---
-        // Save the number on screen, remember the operator symbol, and clear the display for number 2.
+    // 3. OPERATOR BUTTONS (Only run if the screen actually has a number) 
+    //Save the number on screen, remember the operator symbol, and clear the display for number 2.
+    else if (!screen.getText().isEmpty()) {
         if (clicked == btnAdd) {
-            firstNumber = Double.parseDouble(screen.getText()); // Converts string characters ("5") into double float (5.0)
+            firstNumber = Double.parseDouble(screen.getText());
             mathOperator = '+';
             screen.setText("");
-        }
-        if (clicked == btnSub) {
+        } else if (clicked == btnSub) {
             firstNumber = Double.parseDouble(screen.getText());
             mathOperator = '-';
             screen.setText("");
-        }
-        if (clicked == btnMul) {
+        } else if (clicked == btnMul) {
             firstNumber = Double.parseDouble(screen.getText());
             mathOperator = '*';
             screen.setText("");
-        }
-        if (clicked == btnDiv) {
+        } else if (clicked == btnDiv) {
             firstNumber = Double.parseDouble(screen.getText());
             mathOperator = '/';
             screen.setText("");
         }
-
-        // --- STEP 7: CALCULATING THE FINAL ANSWER (=) ---
-        if (clicked == btnEqual) {
-            secondNumber = Double.parseDouble(screen.getText()); // Grab the second number off the screen
-
-            // Run a simple switch block based on the math sign chosen earlier
+        
+        // 4. EQUALS BUTTON (Kept completely inside its own secure block)
+        //CALCULATING THE FINAL ANSWER (=) ---
+        else if (clicked == btnEqual) {
+            secondNumber = Double.parseDouble(screen.getText());
+            
             switch (mathOperator) {
                 case '+':
                     finalAnswer = firstNumber + secondNumber;
@@ -160,20 +172,21 @@ public class main implements ActionListener {
                     if (secondNumber != 0) {
                         finalAnswer = firstNumber / secondNumber;
                     } else {
-                        screen.setText("Error"); // Safety check to prevent division-by-zero crashes
+                        screen.setText("Error");
                         return;
                     }
                     break;
             }
-            
             // Convert the numeric mathematical answer back into string text and display it
+
             screen.setText(String.valueOf(finalAnswer));
-            firstNumber = finalAnswer; // Caches answer so you can continue equations (e.g. 5 + 2 = 7, then + 3 = 10)
+            firstNumber = finalAnswer; // Caches the answer safely inside the equals routine!
         }
     }
+}
 
     // Standard starting engine execution point
     public static void main(String[] args) {
-        new main(); // Launches our clean, visual app window!
+        new Main(); // Launches our clean, visual app window!
     }
 }
